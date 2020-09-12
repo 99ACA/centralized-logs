@@ -1,4 +1,4 @@
 # Centralized-Logs
 
-Setup Elasticsearch Fluentd/Fluent-Bit Kibana   
-Also contain docker example that use fluentd logging driver (also adds additional fields to logs)
+Setup EFK - Elasticsearch Fluentd/Fluent-Bit Kibana  
+Also incllude docker example that use fluentd logging driver (also adds additional fields to logs)
