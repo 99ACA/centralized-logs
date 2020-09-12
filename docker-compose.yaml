@@ -1,0 +1,78 @@
+---
+version: "3"
+services:
+  elasticsearch:
+    image: elasticsearch:${ELK_VERSION:-latest}
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    expose:
+      - 9200
+      - 9300
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ~/.docker/storage/elasticsearch/data:/var/lib/elasticsearch
+    #   - ./Elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/config/elasticsearch.yml
+    networks:
+      - centralize-logs-network
+  kibana: #https://www.elastic.co/guide/en/kibana/7.9/settings.html
+    image: kibana:${ELK_VERSION:-latest}
+    container_name: kibana
+    restart: unless-stopped
+    environment:
+      - xpack.security.enabled=false
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - centralize-logs-network
+  fluentd:
+    image: localhost/fluentd:${FLUENTD_VERSION:-latest}
+    container_name: fluentd
+    restart: unless-stopped
+    environment:
+      - FLUENTD_CONF=fluent-test.conf
+      - encoding=UTF-8
+    ports:
+      - 24224:24224
+    volumes:
+      - ./fluentd/conf/fluent-test.conf:/fluentd/etc/fluent-test.conf
+    build:
+      context: ./fluentd
+      args:
+        - FLUENTD_VERSION
+    networks:
+      - centralize-logs-network
+  web:
+    image: httpd:$HTTPD_VERSION
+    container_name: web
+    restart: unless-stopped
+    ports:
+      - 8033:80
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: "vconx.{{.Name}}.httpd.access" #https://docs.docker.com/config/containers/logging/log_tags/  - @log_name in kibana
+        labels: production_status # adds additional fields to the logging output - from the *labels*
+        env: environment,version # adds additional fields to the logging output - from the *environment*
+    labels:
+      production_status: "testing"
+    environment:
+      - environment=$ENVIROMENT
+      - version=$HTTPD_VERSION
+
+    networks:
+      - centralize-logs-network
+networks:
+  centralize-logs-network:
+    driver: bridge

@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "def99c9d-39dc-4992-b12d-393d3145242c",
+		"name": "Elassic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Show Index (indices)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9200/_cat/indices?v&pretty",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_cat",
+						"indices"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": null
+						},
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				},
+				"description": "Get Elasticsearch index"
+			},
+			"response": []
+		},
+		{
+			"name": "Cluster Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9200?pretty",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"query": [
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				},
+				"description": "Show Cluster info"
+			},
+			"response": []
+		},
+		{
+			"name": "Cluster Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9200/_cat/health?v&pretty",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_cat",
+						"health"
+					],
+					"query": [
+						{
+							"key": "v",
+							"value": null
+						},
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				},
+				"description": "Show cluster status"
+			},
+			"response": []
+		},
+		{
+			"name": "Set Replicas to entire indexs",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"index\" : {     \"number_of_replicas\" : 0   }}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9200/_all/_settings?pretty",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"_all",
+						"_settings"
+					],
+					"query": [
+						{
+							"key": "pretty",
+							"value": null
+						}
+					]
+				},
+				"description": "Set Replicas to entire indexs to zero - only in one node (dev env)"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
