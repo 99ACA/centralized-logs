@@ -66,11 +66,10 @@ services:
         labels: production_status # adds additional fields to the logging output - from the *labels*
         env: environment,version # adds additional fields to the logging output - from the *environment*
     labels:
-      production_status: "testing"
+      production_status: "example"
     environment:
       - environment=$ENVIROMENT
       - version=$HTTPD_VERSION
-
     networks:
       - centralize-logs-network
 networks:
